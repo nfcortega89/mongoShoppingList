@@ -14,6 +14,7 @@ app.use(bodyParser.json()); // middleware; traps the "request"
 app.use(express.static('public'));
 
 var runServer = function(callback) {
+    console.log('db', config.DATABASE_URL);
     mongoose.connect(config.DATABASE_URL, function(err) {
         if (err && callback) {
             return callback(err);
@@ -26,14 +27,7 @@ var runServer = function(callback) {
         });
     });
 };
-// used to make this file both an executable script and a module
-if (require.main == module) {
-    runServer(function(err) {
-        if (err) {
-            console.error(err);
-        }
-    });
-};
+
 
 app.get('/items', function(req, res) {
     Item.find(function(err, items) {
@@ -97,5 +91,13 @@ app.use('*', function(req, res) {
     });
 });
 
+// used to make this file both an executable script and a module
+if (require.main == module) {
+    runServer(function(err) {
+        if (err) {
+            console.error(err);
+        }
+    });
+};
 exports.app = app;
 exports.runServer = runServer;
